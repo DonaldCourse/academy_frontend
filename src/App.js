@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import PublicRouter from './routes/PublicRouter';
+import ProtectRouter from './routes/ProtectRouter';
 
-function App() {
+import './scss/style.scss';
+
+const loading = (
+  <div className="pt-3 text-center">
+    <div className="sk-spinner sk-spinner-pulse"></div>
+  </div>
+)
+// Pages
+const LoginPage = React.lazy(() => import('./features/login/LoginPage'));
+const RegisterPage = React.lazy(() => import('./features/register/RegisterPage'));
+
+// Containers
+const TheLayout = React.lazy(() => import('./components/layout/TheLayout'));
+
+function App(props) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <React.Suspense fallback={loading}>
+        <Switch>
+          <PublicRouter exact path="/login" name="Login" component={LoginPage} />
+          <PublicRouter exact path="/register" name="Register" component={RegisterPage} />
+          <PublicRouter path="/" name="Home" component={TheLayout} />
+        </Switch>
+      </React.Suspense>
+    </BrowserRouter>
   );
 }
+
+App.propTypes = {
+
+};
 
 export default App;

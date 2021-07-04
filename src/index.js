@@ -1,13 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "react-app-polyfill/ie11"; // For IE 11 support
+import "react-app-polyfill/stable";
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { MuiThemeProvider } from "@material-ui/core";
+import App from "./App";
+import { Provider } from "react-redux";
+import store from "./reducer/store";
+import reportWebVitals from "./reportWebVitals";
+
+import theme from './theme';
+import { Globalstyled } from "./GlobalStyle";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <Provider store={store}>
+      <Globalstyled />
+      <BrowserRouter>
+        <MuiThemeProvider theme={theme}>
+          <App />
+        </MuiThemeProvider>
+      </BrowserRouter>
+    </Provider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 
