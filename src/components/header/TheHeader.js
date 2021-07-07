@@ -16,7 +16,10 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Hidden from '@material-ui/core/Hidden';
 import tingtong from '../../assets/icons/tingtong_text.png'
-
+import { Button } from '@material-ui/core';
+import PopoverCategories from '../shared/PopoverCategories';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -83,13 +86,67 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const categories = [
+    {
+        title: "Donald 1",
+        childs: [
+            {
+                title: "Donald 2",
+            },
+            {
+                title: "Donald 3",
+            }
+        ]
+    },
+
+    {
+        title: "Donald 4",
+        childs: [
+            {
+                title: "Donald 5",
+            },
+            {
+                title: "Donald 6",
+            }
+        ]
+    },
+
+    {
+        title: "Donald 7",
+        childs: [
+            {
+                title: "Donald 8",
+            },
+            {
+                title: "Donald 9",
+            }
+        ]
+    },
+
+    {
+        title: "Donald 10",
+        childs: [
+            {
+                title: "Donald 11",
+            },
+            {
+                title: "Donald 12",
+            }
+        ]
+    }
+]
+
 export default function TheHeader() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorPopover, setAnchorPopover] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const auth = useSelector(state => state.auth);
+    const history = useHistory();
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -106,6 +163,15 @@ export default function TheHeader() {
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverOpen = (event) => {
+        console.log(event);
+        setAnchorPopover(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorPopover(null);
     };
 
     const menuId = 'primary-search-account-menu';
@@ -135,69 +201,28 @@ export default function TheHeader() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
                 <p>Profile</p>
             </MenuItem>
+            {
+                !auth && <MenuItem>
+                    <p>Đăng nhập</p>
+                </MenuItem>
+            }
+
+            {
+                !auth && <MenuItem>
+                    <p>Đăng ký</p>
+                </MenuItem>
+            }
         </Menu>
     );
 
-    return (
-        <div className={classes.grow}>
-            <AppBar position="static" style={{backgroundColor: '#ffffff', color: 'darkgray', position: 'fixed'}}>
-                <Toolbar>
-                    <Hidden xsDown>
-                        <img style={{ "height": 50 }} src={tingtong} className={classes.title}></img>
-                    </Hidden>
-
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>
-                    <div className={classes.grow} />
+    const renderComponentLogin = () => {
+        if (auth) {
+            return (
+                <div>
                     <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
                         <IconButton
                             edge="end"
                             aria-label="account of current user"
@@ -209,6 +234,63 @@ export default function TheHeader() {
                             <AccountCircle />
                         </IconButton>
                     </div>
+                </div>
+            )
+        }
+
+        return (
+            <div>
+                <div className={classes.sectionDesktop}>
+                    <Button
+                        style={{ marginRight: "16px" }}
+                        onClick={() => history.push("/login")}
+                    >
+                        Đăng nhập
+                    </Button>
+                    <Button
+                        onClick={() => history.push("/register")}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Đăng ký
+                    </Button>
+                </div>
+
+            </div>
+        )
+    }
+    return (
+        <div className={classes.grow}>
+            <AppBar position="static" style={{ backgroundColor: '#ffffff', color: 'darkgray', position: 'fixed' }}>
+                <Toolbar>
+                    <Hidden xsDown>
+                        <a href="/">
+                            <img style={{ "height": 50 }} src={tingtong} className={classes.title}></img>
+                        </a>
+                    </Hidden>
+
+                    <Button onClick={handlePopoverOpen} onMouseEnter={handlePopoverOpen} style={{ marginLeft: "16px" }} color="default">
+                        <Typography variant="h5" component="p">Danh mục</Typography>
+                    </Button>
+
+                    <div style={{ display: "inherit", position: "relative" }}>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className={classes.grow} />
+                    {renderComponentLogin()}
                     <div className={classes.sectionMobile}>
                         <IconButton
                             aria-label="show more"
@@ -224,6 +306,9 @@ export default function TheHeader() {
             </AppBar>
             {renderMobileMenu}
             {renderMenu}
+            <div onMouseLeave={handlePopoverClose}>
+                <PopoverCategories categories={categories} anchorEl={anchorPopover} handlePopoverClose={handlePopoverClose}></PopoverCategories>
+            </div>
         </div>
     );
 }
