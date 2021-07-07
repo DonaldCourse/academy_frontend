@@ -1,58 +1,49 @@
 import { postAPI, getAPI } from "./index";
 
-const CreateCourse = (data) => {
-  return postAPI("/api/teacher/courses", data);
+const GetCourses = (params) => {
+  return getAPI(`/api/courses?categoriesId=${params}`);
 };
 
-const GetAllCourse = () => {
-  return getAPI("/api/teacher/courses");
+const GetCourseDetail = (id) => {
+  return getAPI(`/api/courses/${id}`);
 };
 
-const GetAllCourseOfTeacher = (page, limit) => {
-  return getAPI(`/api/teacher/courses?page=${page}&limit=${limit}`);
+const GetLessonsOfCourse = (id) => {
+  return getAPI(`/api/courses/${id}/lessons`);
 };
 
-const GetCourseDetailOfTeacher = (params) => {
-  return getAPI(`/api/teacher/courses/${params}`);
+const GetCoursesOfWeek = () => {
+  return getAPI(`/api/courses/coursesOfWeek`);
 };
 
-const CreateLessonTitle = (params, data) => {
-  return postAPI(`api/teacher/courses/${params}/lessons`, data);
+const GetCoursesWatchMost = () => {
+  return getAPI(`/api/courses/coursesWatchMost`);
 };
 
-const GetLessonTitle = (params) => {
-  return getAPI(`api/teacher/courses/${params}/lessons`);
+const GetCoursesNew = () => {
+  return getAPI(`/api/courses/coursesNew`);
 };
 
-const CreateLessonSlide = (params, data) => {
-  return postAPI(`api/teacher/courses/${params}/lesson-slide`, data);
+const GetCategoriesRegisterMost = () => {
+  return getAPI(`/api/courses/categoriesRegisterMost`);
 };
 
-const getLessonSlide = (params, data) => {
-  return getAPI(`api/teacher/lessons/${params}/lesson-slide`);
+const GetAllFeedbackOfCourse = (page, limit, id) => {
+  return getAPI(`/api/courses/${id}/feedback?limit=${limit}&page=${page}`);
 };
 
-const CreateLessonVideo = (params, data) => {
-  return postAPI(`api/teacher/courses/${params}/lesson-video`, data);
+const GetAllCourseRelated = (id) => {
+  return getAPI(`/api/courses/${id}/related`);
 };
-
-const getLessonVideo = (params) => {
-  return getAPI(`api/teacher/lessons/${params}/lesson-video`);
-};
-
-const ActionPublishCourse = (params, data) => {
-  return postAPI(`api/teacher/courses/${params}`, data)
-}
 
 export default {
-  CreateCourse,
-  GetAllCourseOfTeacher,
-  GetCourseDetailOfTeacher,
-  CreateLessonTitle,
-  CreateLessonSlide,
-  CreateLessonVideo,
-  GetLessonTitle,
-  getLessonSlide,
-  getLessonVideo,
-  ActionPublishCourse
+  GetCourses,
+  GetCourseDetail,
+  GetLessonsOfCourse,
+  GetCoursesOfWeek,
+  GetCoursesWatchMost,
+  GetCoursesNew,
+  GetCategoriesRegisterMost,
+  GetAllFeedbackOfCourse,
+  GetAllCourseRelated
 };
