@@ -6,10 +6,9 @@ import { Grid, InputAdornment, IconButton, Button, TextField, Typography, Paper 
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
-// import { signInWithGoogle, auth } from '../../../../app/firebaseConfig';
-// import fbIcon from '../../../../assets/images/facebookIcon.svg';
-// import ggIcon from '../../../../assets/images/googleIcon.svg';
 import { useHistory } from "react-router-dom";
+import AuthService from "../../services/AuthServices";
+import { setAuth } from "../../reducer/AuthSlide";
 
 LoginPgae.propTypes = {
 
@@ -122,78 +121,32 @@ function LoginPgae(props) {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const history = useHistory();
-    //   const responseFacebook = response => {
-    //     const data = {
-    //       email: '',
-    //       phone: '',
-    //       password: '',
-    //       social_req: {
-    //         login_type: 'FACEBOOK',
-    //         access_token: response.accessToken,
-    //       },
-    //     };
-
-    //     console.log(data);
-    //   };
-
-    //   useEffect(() => {
-    //     const unsubscribeFromAuth = auth.onAuthStateChanged(user => {
-    //       if (user !== null) {
-    //         const data = {
-    //           email: '',
-    //           phone: '',
-    //           password: '',
-    //           social_req: {
-    //             login_type: 'GOOGLE',
-    //             access_token: user.refreshToken,
-    //           },
-    //         };
-
-    //         console.log(data);
-    //       }
-    //     });
-
-    //     return () => {
-    //       if (unsubscribeFromAuth) {
-    //         unsubscribeFromAuth();
-    //         auth.signOut()
-    //       }
-    //     }
-    //   }, []);
-
     const onSubmit = data => {
         const user_info = pick(data, [
-            'username',
+            'email',
             'password',
         ]);
 
         const body = {
-            username: user_info.username,
+            email: user_info.email,
             password: user_info.password
         }
-
-        // fetchLogin(body);
+        fetchLogin(body);
 
     };
 
-    //   const fetchLogin = useCallback(async (data) => {
-    //     await dispatch(getAuthLogin(data))
-    //       .then((res) => {
-    //         const result = unwrapResult(res);
-    //         if (result.user.id && result.user.role == 0) {
-    //           localStorage.setItem("idUser", result.user.id);
-    //           localStorage.setItem("token", result.accessToken);
-    //           // connectSocket();
-    //           dispatch(isLoginOn());
-    //           history.push('/');
-    //         } else {
+    const fetchLogin = useCallback(async (data) => {
+        AuthService.login(data).then(res => {
+            if (res.status == 200) {
+                console.log(res.data);
+                window.localStorage.setItem("token", res.data.token);
+                dispatch(setAuth(res.data.user));
+                history.push('/')
+            }
+        }).catch(err => {
 
-    //         }
-    //       })
-    //       .catch((e) => {
-
-    //       });
-    //   });
+        })
+    });
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -205,14 +158,14 @@ function LoginPgae(props) {
 
     return (
         <div className={classes.root}>
-            <Grid container xs={8} md={3} style={{height: 350}}>
+            <Grid container xs={8} md={3} style={{ height: 350 }}>
                 <Paper elevation={3}>
                     <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
 
                         <Typography className={classes.title}>Đăng nhập</Typography>
 
                         <TextField
-                            {...register("username", {
+                            {...register("email", {
                                 required: 'Vui lòng nhập email đăng nhập !',
                             })}
                             error={!!errors.username}
@@ -224,7 +177,7 @@ function LoginPgae(props) {
                             fullWidth
                             id="username"
                             label="Email"
-                            name="username"
+                            name="email"
                             type="email"
                         />
 
