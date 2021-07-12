@@ -216,7 +216,7 @@ function HomePage(props) {
                                 alignItems="center"
                                 item style={{ marginTop: '8px' }}>
                                 {categoriesBest.map((item) => {
-                                    return <div onClick={() => history.push(`/courses?categoryId=${item._id}`)}>
+                                    return <div onClick={() => history.push(`/courses?categoriesId=${item._id}`)}>
                                         <ItemCategory category={item}></ItemCategory>
                                     </div>
                                 })}

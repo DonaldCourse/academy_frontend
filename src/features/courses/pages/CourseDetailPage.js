@@ -7,12 +7,15 @@ import Pagination from '@material-ui/lab/Pagination';
 import { Container } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import CourseServices from '../../../services/CourseServices';
 import ItemLesson from '../components/ItemLesson';
 import PopupPreviewVideo from '../components/PopupPreviewVideo';
 import ItemReview from '../components/ItemReview';
 import { List } from '@material-ui/core';
 import ItemCourseVerticalSmall from '../components/ItemCourseVerticalSmall';
+import { useAuth } from '../../../context/auth';
+import CourseServices from '../../../services/CourseServices';
+import Swal from 'sweetalert2'
+import DialogFeedbackCourse from '../components/DialogFeedbackCourse';
 
 CourseDetailPage.propTypes = {
 
@@ -87,20 +90,28 @@ const useStyles = makeStyles((theme) => ({
 function CourseDetailPage(props) {
     const classes = useStyles();
     const { params } = useRouteMatch();
+    const history = useHistory();
 
     const [course, setCourseDetail] = useState();
     const [coursesRelated, setCoursesRelated] = useState([]);
     const [lessons, setLessons] = useState([]);
     const [open, setOpen] = useState(false);
+    const [openReview, setOpenReview] = useState(false);
     const [lessonSelected, setLessonSelected] = useState({});
     const [feedbacks, setFeedbacks] = useState([]);
     const [total, setTotal] = useState(1);
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
+    const { auth } = useAuth();
+    const [validateCourse, setValidateCourse] = useState(false);
 
     useEffect(() => {
         getCourseDetail();
         getAllRelated();
+        if (auth && auth?.role && auth.role == "student") {
+            console.log("Donald");
+            handleValidateCourse();
+        }
     }, [params]);
 
     useEffect(async () => {
@@ -158,6 +169,90 @@ function CourseDetailPage(props) {
         setOpen(!open);
     }
 
+    const handleOnCloseReview = () => {
+        setOpenReview(!openReview);
+    }
+
+    const handleRegisterCourse = async () => {
+        if (auth && auth?.role && auth.role == "student") {
+            CourseServices.RegisterCourse(params.id).then(res => {
+                if (res.status == 201) {
+                    setValidateCourse(true);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Bắt đầu học thôi nào !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Đăng ký không thành công !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }).catch(err => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Đăng ký không thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+        } else {
+            history.replace('/login');
+        }
+    }
+
+    const handleValidateCourse = async () => {
+        try {
+            CourseServices.CheckRegisterCourse(params.id).then(res => {
+                if (res.status == 200) {
+                    setValidateCourse(res.data.data)
+                }
+            })
+        } catch (error) {
+
+        }
+    }
+
+    const handleFeedback = (body) => {
+        setOpenReview(!openReview)
+        CourseServices.PostReviewCourse(params.id, body).then(res => {
+            if (res.status == 201) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Cảm ơn bạn đã đánh giá về khoá học !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(res => {
+                    window.location.reload();
+                })
+            } else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Đánh giá không thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        }).catch(err => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Đánh giá không thành công !!!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
+    }
+
     return (
         <div className={classes.root}>
             <CardMedia
@@ -190,15 +285,29 @@ function CourseDetailPage(props) {
                                 <Typography style={{ marginTop: '8px' }} variant="body2" component="p">Level : {course && course.minimum_skill}</Typography>
                             </CardContent>
                             <CardActions>
+                                {
+                                    !validateCourse ? <Button
+                                        onClick={handleRegisterCourse}
+                                        type='button'
+                                        fullWidth
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.submit}>
+                                        Đăng ký
+                                    </Button> :
+                                        <Button
+                                            onClick={() => history.push(`/courses/${params.id}/lessons`)}
+                                            type='button'
+                                            fullWidth
+                                            variant="contained"
+                                            color="primary"
+                                            className={classes.submit}>
+                                            Bắt đầu học
+                                        </Button>
+                                }
+
                                 <Button
-                                    type='button'
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}>
-                                    Đăng ký
-                                </Button>
-                                <Button
+                                    onClick={() => setOpenReview(true)}
                                     type='button'
                                     fullWidth
                                     variant="contained"
@@ -274,6 +383,7 @@ function CourseDetailPage(props) {
             </Container>
 
             <PopupPreviewVideo open={open} onClose={handleOnClose} lesson={lessonSelected}></PopupPreviewVideo>
+            <DialogFeedbackCourse open={openReview} onClose={handleOnCloseReview} onSubmit={handleFeedback}></DialogFeedbackCourse>
         </div>
     );
 }

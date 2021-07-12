@@ -7,30 +7,30 @@ const login = (data) => {
 };
 
 const logout = () => {
-  return postAPI("/api/auth/logout", {});
+  return getAPI("/api/auth/logout");
 };
 
 const validateUser = () => {
   return getAPI("/api/auth/validate-user", {});
 };
 
-const registerTutor = (body) => {
-  return postAPI("/api/auth/tutor/register", body);
+const register = (body) => {
+  return postAPI("/api/auth/register", body);
 };
 
-const UpdateProfileTutor = (body) => {
-  return putAPI("/api/teacher/profile", body);
+const updateProfile = (body) => {
+  return putAPI("/api/profile", body);
 };
 
-const getProfileTutor = (body) => {
-  return getAPI("/api/teacher/profile", body);
+const getProfile = (body) => {
+  return getAPI("/api/profile", body);
 };
 
 export default {
   login,
   logout,
   validateUser,
-  registerTutor,
-  UpdateProfileTutor,
-  getProfileTutor,
+  register,
+  updateProfile,
+  getProfile,
 };

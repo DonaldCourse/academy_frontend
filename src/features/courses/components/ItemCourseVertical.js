@@ -41,23 +41,26 @@ const useStyles = makeStyles((theme) => ({
         textOverflow: 'ellipsis',
         display: '-webkit-box',
         WebkitLineClamp: 1,
-        WebkitBoxOrient: 'vertical'
+        WebkitBoxOrient: 'vertical',
+        marginTop: theme.spacing(1)
     },
     maxLineTwo: {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         display: '-webkit-box',
         WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical'
+        WebkitBoxOrient: 'vertical',
+        marginTop: theme.spacing(1)
     }
 }));
 
 
 function ItemCourseVertical({ item }) {
     const classes = useStyles();
-
+    const history = useHistory();
+    
     return (
-        <Card className={classes.root}>
+        <Card className={classes.root} onClick={() => history.replace(`/courses/${item._id}`)}>
             <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
@@ -79,10 +82,16 @@ function ItemCourseVertical({ item }) {
                     </div>
                     <div className={classes.rating}>
                         <Typography variant="body2" component="p" style={{ color: '#be5a0e', fontWeight: 700, lineHeight: 1.2 }}>{item.rating}</Typography>
-                        <Rating name="half-rating-read" size="small" defaultValue={item.rating} precision={0.5} readOnly />
-                        <Typography variant="body2" component="p">{item.count_rating}</Typography>
+                        <Rating style={{
+                            marginLeft: '8px'
+                        }}  name="half-rating-read" size="small" defaultValue={item.rating} precision={0.5} readOnly />
+                        <Typography  style={{
+                            marginLeft: '8px'
+                        }}  variant="body2" component="p">{item.count_rating}</Typography>
                     </div>
-                    <Typography variant="body2" component="p">Level : {item.minimum_skill}</Typography>
+                    <Typography style={{
+                        marginTop: '8px'
+                    }} variant="body2" component="p">Level : {item.minimum_skill}</Typography>
                 </CardContent>
             </div>
         </Card>

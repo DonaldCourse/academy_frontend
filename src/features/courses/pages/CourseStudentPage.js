@@ -4,7 +4,7 @@ import { Player, BigPlayButton } from 'video-react';
 import { makeStyles } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import CourseServices from '../../../services/CourseServices';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import ItemLesson from '../components/ItemLesson';
 
 CourseStudentPage.propTypes = {
@@ -31,9 +31,11 @@ function CourseStudentPage(props) {
     const { params } = useRouteMatch();
     const [lessons, setLessons] = useState([]);
     const [lessonSelected, setLessonSelected] = useState();
+    const history = useHistory();
     const refPlayer = useRef(null);
 
     useEffect(() => {
+        handleValidateCourse();
         getAllLesson();
     }, []);
 
@@ -51,6 +53,20 @@ function CourseStudentPage(props) {
     const handleOnClick = async item => {
         setLessonSelected(item);
         refPlayer.current.video.load();
+    }
+
+    const handleValidateCourse = async () => {
+        try {
+            CourseServices.CheckRegisterCourse(params.id).then(res => {
+                if (res.status == 200) {
+                    if (res.data.data == false) {
+                        history.replace(`/courses/${params.id}`)
+                    }
+                }
+            });
+        } catch (error) {
+
+        }
     }
 
     return (

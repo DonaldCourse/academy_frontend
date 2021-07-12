@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from '../context/auth';
 
 ProtectRouter.propTypes = {
     component: PropTypes.oneOfType([PropTypes.elementType, PropTypes.node])
@@ -14,8 +15,8 @@ const renderMergedProps = (component, ...rest) => {
 
 function ProtectRouter({ component: Component, redirectTo, ...rest }) {
 
-    const auth = useSelector((state) => state.auth);
-    console.log(auth);
+    const { auth } = useAuth();
+
     return (
         <Route
             {...rest}

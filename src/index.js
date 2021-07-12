@@ -12,13 +12,17 @@ import reportWebVitals from "./reportWebVitals";
 import theme from './theme';
 import { Globalstyled } from "./GlobalStyle";
 
+import { AuthProvider } from './context/auth'
+
 ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
       <Globalstyled />
       <BrowserRouter>
         <MuiThemeProvider theme={theme}>
-          <App />
+          <AuthProvider persistKey='auth'>
+            <App />
+          </AuthProvider>
         </MuiThemeProvider>
       </BrowserRouter>
     </Provider>

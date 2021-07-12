@@ -1,7 +1,7 @@
 import { postAPI, getAPI } from "./index";
 
-const GetCourses = (params) => {
-  return getAPI(`/api/courses?categoriesId=${params}`);
+const GetCourses = (params, limit, page) => {
+  return getAPI(`/api/courses?categoriesId=${params}&limit=${limit}&page=${page}`);
 };
 
 const GetCourseDetail = (id) => {
@@ -32,8 +32,20 @@ const GetAllFeedbackOfCourse = (page, limit, id) => {
   return getAPI(`/api/courses/${id}/feedback?limit=${limit}&page=${page}`);
 };
 
+const PostReviewCourse = (id, body) => {
+  return postAPI(`/api/courses/${id}/feedback`, body);
+};
+
 const GetAllCourseRelated = (id) => {
   return getAPI(`/api/courses/${id}/related`);
+};
+
+const RegisterCourse = (id) => {
+  return postAPI(`/api/courses/${id}/register`);
+};
+
+const CheckRegisterCourse = (id) => {
+  return getAPI(`/api/courses/${id}/check`);
 };
 
 export default {
@@ -45,5 +57,8 @@ export default {
   GetCoursesNew,
   GetCategoriesRegisterMost,
   GetAllFeedbackOfCourse,
-  GetAllCourseRelated
+  GetAllCourseRelated,
+  RegisterCourse,
+  CheckRegisterCourse,
+  PostReviewCourse
 };

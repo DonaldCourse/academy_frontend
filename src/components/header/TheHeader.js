@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -20,7 +20,9 @@ import { Button } from '@material-ui/core';
 import PopoverCategories from '../shared/PopoverCategories';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
+import { useAuth } from '../../context/auth';
+import AuthServices from '../../services/AuthServices';
+import CurriculumService from '../../services/CurriculumService';
 const useStyles = makeStyles((theme) => ({
     grow: {
         flexGrow: 1,
@@ -86,67 +88,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const categories = [
-    {
-        title: "Donald 1",
-        childs: [
-            {
-                title: "Donald 2",
-            },
-            {
-                title: "Donald 3",
-            }
-        ]
-    },
-
-    {
-        title: "Donald 4",
-        childs: [
-            {
-                title: "Donald 5",
-            },
-            {
-                title: "Donald 6",
-            }
-        ]
-    },
-
-    {
-        title: "Donald 7",
-        childs: [
-            {
-                title: "Donald 8",
-            },
-            {
-                title: "Donald 9",
-            }
-        ]
-    },
-
-    {
-        title: "Donald 10",
-        childs: [
-            {
-                title: "Donald 11",
-            },
-            {
-                title: "Donald 12",
-            }
-        ]
-    }
-]
-
 export default function TheHeader() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorPopover, setAnchorPopover] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+    const [categories, setCategories] = useState([]);
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const auth = useSelector(state => state.auth);
+    const { auth, setAuth } = useAuth();
     const history = useHistory();
+
+    useEffect(() => {
+        getAllCategories();
+    }, []);
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -161,6 +117,21 @@ export default function TheHeader() {
         handleMobileMenuClose();
     };
 
+    const handleSignout = async () => {
+        handleMenuClose();
+        AuthServices.logout().then(res => {
+            if (res.status == 200) {
+                setAuth({})
+                window.localStorage.removeItem('token')
+                history.push('/');
+            } else {
+
+            }
+        }).catch(err => {
+
+        })
+    }
+
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
@@ -174,6 +145,24 @@ export default function TheHeader() {
         setAnchorPopover(null);
     };
 
+    const onHandleSubmit = item => {
+        console.log(item);
+        history.replace(`/courses?categoriesId=${item._id}`)
+        handlePopoverClose();
+    }
+
+    const getAllCategories = async () => {
+        CurriculumService.GetCurriculums().then(res => {
+            if (res.status == 200) {
+                if (res.data.data.length > 0 && res.data.data[0]?.childrens) {
+                    setCategories(res.data.data[0].childrens)
+                }
+            }
+        }).catch(err => {
+
+        })
+    }
+
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
         <Menu
@@ -185,8 +174,9 @@ export default function TheHeader() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Thông tin cá nhận</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Khoá học của tôi</MenuItem>
+            <MenuItem onClick={handleSignout}>Đăng xuất</MenuItem>
         </Menu>
     );
 
@@ -215,11 +205,17 @@ export default function TheHeader() {
                     <p>Đăng ký</p>
                 </MenuItem>
             }
+
+            {
+                auth && auth?.role && auth.role == "student" && <MenuItem>
+                    <p>Đăng xuất</p>
+                </MenuItem>
+            }
         </Menu>
     );
 
     const renderComponentLogin = () => {
-        if (auth) {
+        if (auth && auth?.role && auth.role == "student") {
             return (
                 <div>
                     <div className={classes.sectionDesktop}>
@@ -307,7 +303,7 @@ export default function TheHeader() {
             {renderMobileMenu}
             {renderMenu}
             <div onMouseLeave={handlePopoverClose}>
-                <PopoverCategories categories={categories} anchorEl={anchorPopover} handlePopoverClose={handlePopoverClose}></PopoverCategories>
+                <PopoverCategories onHandleSubmit={onHandleSubmit} categories={categories} anchorEl={anchorPopover} handlePopoverClose={handlePopoverClose}></PopoverCategories>
             </div>
         </div>
     );

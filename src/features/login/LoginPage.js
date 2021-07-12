@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
 import { useHistory } from "react-router-dom";
 import AuthService from "../../services/AuthServices";
-import { setAuth } from "../../reducer/AuthSlide";
+import { useAuth } from '../../context/auth';
 
 LoginPgae.propTypes = {
 
@@ -117,10 +117,11 @@ const useStyles = makeStyles(theme => ({
 
 function LoginPgae(props) {
     const classes = useStyles();
-    const dispatch = useDispatch();
+    const { auth, setAuth } = useAuth();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const history = useHistory();
+
     const onSubmit = data => {
         const user_info = pick(data, [
             'email',
@@ -140,7 +141,7 @@ function LoginPgae(props) {
             if (res.status == 200) {
                 console.log(res.data);
                 window.localStorage.setItem("token", res.data.token);
-                dispatch(setAuth(res.data.user));
+                setAuth(res.data.user);
                 history.push('/')
             }
         }).catch(err => {
@@ -158,7 +159,7 @@ function LoginPgae(props) {
 
     return (
         <div className={classes.root}>
-            <Grid container xs={8} md={3} style={{ height: 350 }}>
+            <Grid container item xs={8} md={3} style={{ height: 350 }}>
                 <Paper elevation={3}>
                     <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
 
@@ -221,14 +222,14 @@ function LoginPgae(props) {
                             Quên mật khẩu ?
                         </a>
 
-                        <Grid container direction='row' className={classes.not_acc}>
+                        <div className={classes.not_acc}>
                             <Typography className={classes.txt_not_acc}>
                                 Bạn chưa có tài khoản?
                             </Typography>
                             <a href="/register" className={classes.txt_register}>
                                 Đăng ký
                             </a>
-                        </Grid>
+                        </div>
                     </form>
                 </Paper>
             </Grid>

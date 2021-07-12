@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Container, Grid, makeStyles, Typography, Paper } from '@material-ui/core';
+import { Container, Grid, makeStyles, Typography, Paper, Box } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
 import ItemCourseVertical from './components/ItemCourseVertical';
+import CoursesService from '../../services/CourseServices';
+import CurriculumService from '../../services/CurriculumService';
+import { useLocation, useRouteMatch } from 'react-router-dom';
+import queryString from 'query-string';
+import ItemCourseVerticalLoading from './components/ItemCourseVeticalLoading';
 
 Courses.propTypes = {
 
@@ -11,7 +16,11 @@ Courses.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        position: 'inherit',
+        overflow: 'auto'
     },
     paper: {
         padding: theme.spacing(2),
@@ -42,47 +51,87 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const courses = [
-    {
-        title: "Donald 1"
-    },
-    {
-        title: "Donald 2"
-    },
-    {
-        title: "Donald 3"
-    },
-    {
-        title: "Donald 4"
-    },
-    {
-        title: "Donald 5"
-    }
-]
-
 function Courses(props) {
 
     const classes = useStyles();
+    const [courses, setCourses] = useState([]);
+    const [categories, setCategories] = useState();
+    const [total, setTotal] = useState(1);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const search = queryString.parse(window.location.search);;
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        getCategoriesDetail();
+    }, [search.categoriesId]);
+
+    useEffect(async () => {
+        getAllCourseOfCategory(limit, page);
+    }, [page, search.categoriesId]);
+
+    const getAllCourseOfCategory = async (limit, page) => {
+        setLoading(true);
+        CoursesService.GetCourses(search.categoriesId, limit, page).then(res => {
+            setLoading(false);
+            if (res.status == 200) {
+                setCourses(res.data.data.list);
+                setTotal(res.data.data.totalPages);
+            }
+        }).catch(err => {
+            setLoading(false);
+        })
+    }
+
+    const getCategoriesDetail = async () => {
+        CurriculumService.GetCurriculumsDetail(search.categoriesId).then(res => {
+            if (res.status == 200) {
+                setCategories(res.data.data);
+            }
+        }).catch(err => {
+
+        })
+    }
+
+    const handleChange = (event, value) => {
+        setPage(value);
+    };
 
     return (
-        <Container className={classes.container}>
-            <Typography variant="h3" component="h3">
-                Donald Trieu
-            </Typography>
+        <div className={classes.root}>
+            <Container className={classes.container}>
+                <Typography variant="h3" component="h3">
+                    <Box lineHeight={1} fontWeight="fontWeightBold">
+                        Tất cả các khoá học thuộc : {categories && categories?.name && categories.name}
+                    </Box>
+                </Typography>
 
-            <Grid container item spacing={1} style={{ marginTop: '8px' }}>
-                {courses.map((item) => {
-                    return <Grid key={item.title} container item xs={12}>
-                        <ItemCourseVertical></ItemCourseVertical>
-                    </Grid>
-                })}
-            </Grid>
+                <Grid container item spacing={1} style={{ marginTop: '8px' }}>
+                    {
+                        loading ? [1, 2, 3].map((item, index) => {
+                            return <Grid key={index} container item xs={12}>
+                                <ItemCourseVerticalLoading item={item}></ItemCourseVerticalLoading>
+                            </Grid>
+                        }) :
+                            courses.length != 0 ? courses.map((item) => {
+                                return <Grid key={item.title} container item xs={12}>
+                                    <ItemCourseVertical item={item}></ItemCourseVertical>
+                                </Grid>
+                            }) : (
+                                <Grid container item xs={12}>
+                                    <Typography>Không có khoá học trong danh muc</Typography>
+                                </Grid>
+                            )
+                    }
+                </Grid>
 
-            <div className={classes.pagination}>
-                <Pagination count={10} variant="outlined" color="primary" siblingCount={0} />
-            </div>
+                <div className={classes.pagination}>
+                    {
+                        courses.length != 0 && <Pagination size="large" color="primary" count={total} page={page} siblingCount={0} onChange={handleChange} />
+                    }
+                </div>
 
-        </Container>
+            </Container>
+        </div>
     );
 }
 

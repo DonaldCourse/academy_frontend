@@ -15,7 +15,7 @@ const routes = [
     path: "/courses/:id", name: "Chi tiết khoá học", component: CourseDetailPage, auth: false, exact: true
   },
   {
-    path: "/courses/:id/lessons", name: "Chi tiết khoá học", component: CourseStudentPage, auth: false, exact: true
+    path: "/courses/:id/lessons", name: "Chi tiết khoá học", component: CourseStudentPage, auth: true, exact: true
   },
 ];
 
