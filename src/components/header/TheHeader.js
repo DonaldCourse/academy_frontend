@@ -255,6 +255,7 @@ export default function TheHeader() {
             </div>
         )
     }
+    
     return (
         <div className={classes.grow}>
             <AppBar position="static" style={{ backgroundColor: '#ffffff', color: 'darkgray', position: 'fixed' }}>
