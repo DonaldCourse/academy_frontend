@@ -12,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         width: "100%",
-        marginTop: theme.spacing(1)
+        marginTop: theme.spacing(1),
+        cursor: "pointer",
+        pointerEvents: "auto"
     },
     details: {
         display: 'flex',

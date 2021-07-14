@@ -11,7 +11,9 @@ ItemCourseVertical.propTypes = {
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        width: "100%"
+        width: "100%",
+        cursor: "pointer",
+        pointerEvents: "auto"
     },
     details: {
         display: 'flex',
@@ -50,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
         display: '-webkit-box',
         WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical',
-        marginTop: theme.spacing(1)
     }
 }));
 

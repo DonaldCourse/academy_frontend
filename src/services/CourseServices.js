@@ -1,4 +1,4 @@
-import { postAPI, getAPI } from "./index";
+import { postAPI, getAPI, delAPI } from "./index";
 
 const GetCourses = (params, limit, page) => {
   return getAPI(`/api/courses?categoriesId=${params}&limit=${limit}&page=${page}`);
@@ -48,6 +48,30 @@ const CheckRegisterCourse = (id) => {
   return getAPI(`/api/courses/${id}/check`);
 };
 
+const SearchCourses = (limit, page, query, sort) => {
+  return getAPI(`/api/courses/search?limit=${limit}&page=${page}&q=${query}&sort=${sort}`);
+};
+
+const MyCourses = (limit, page) => {
+  return getAPI(`/api/courses/my-courses?limit=${limit}&page=${page}`);
+};
+
+const FavoriteCourse = (id) => {
+  return postAPI(`/api/courses/${id}/favorite`);
+};
+
+const RemoveFavoriteCourse = (id) => {
+  return delAPI(`/api/courses/${id}/favorite`);
+};
+
+const CheckFavoriteCourse = (id) => {
+  return getAPI(`/api/courses/${id}/check-favorite`);
+};
+
+const MyFavoriteCourses = (limit, page) => {
+  return getAPI(`/api/courses/my-favorite?limit=${limit}&page=${page}`);
+};
+
 export default {
   GetCourses,
   GetCourseDetail,
@@ -60,5 +84,11 @@ export default {
   GetAllCourseRelated,
   RegisterCourse,
   CheckRegisterCourse,
-  PostReviewCourse
+  PostReviewCourse,
+  SearchCourses,
+  MyCourses,
+  FavoriteCourse,
+  RemoveFavoriteCourse,
+  CheckFavoriteCourse,
+  MyFavoriteCourses
 };

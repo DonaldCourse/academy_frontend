@@ -10,7 +10,9 @@ ItemCourseVerticalLoading.propTypes = {
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        width: "100%"
+        width: "100%",
+        cursor: "pointer",
+        pointerEvents: "auto"
     },
     details: {
         display: 'flex',

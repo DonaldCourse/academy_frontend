@@ -13,6 +13,8 @@ import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
+    cursor: "pointer",
+    pointerEvents: "auto"
   },
   media: {
     height: 0,

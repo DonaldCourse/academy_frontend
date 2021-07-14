@@ -1,13 +1,16 @@
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useForm } from "react-hook-form";
 import { Grid, InputAdornment, IconButton, Button, TextField, Typography, Paper } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
 import { Redirect, useHistory } from "react-router-dom";
+import queryString from 'query-string';
+import { useAuth } from '../../context/auth';
+import Swal from 'sweetalert2';
+import AuthServices from '../../services/AuthServices';
 
 VerifyPassNewPage.propTypes = {};
 
@@ -118,6 +121,8 @@ function VerifyPassNewPage(props) {
     const [showConfirmPWD, setShowConfirmPWD] = useState(false);
     const [password, setPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
+    const search = queryString.parse(window.location.search);;
+    const { auth, setAuth } = useAuth();
     const history = useHistory();
 
     const handleClickShowPassword = () => {
@@ -128,24 +133,58 @@ function VerifyPassNewPage(props) {
         setShowConfirmPWD(!showConfirmPWD);
     }
 
-
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
     const onSubmit = data => {
         const user_info = pick(data, [
-            'email',
-            'username',
             'password',
         ]);
 
         const body = {
-            email: user_info.email,
-            username: user_info.username,
             password: user_info.password
         }
 
+        validateAcc(body);
+    }
+
+    const validateAcc = async (body) => {
+        AuthServices.resetPassword(body, search.token).then(res => {
+            if (res.status == 200) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Xác nhận thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(result => {
+                    window.localStorage.setItem("token", res.data.token);
+                    setAuth(res.data.user);
+                    history.replace('/');
+                });
+            } else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Xác nhận thất bại !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(res => {
+                    history.replace('/');
+                })
+            }
+        }).catch(err => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Xác nhận thất bại !!!',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(res => {
+                history.replace('/');
+            })
+        })
     }
 
     const validateMatchedPass = (value) => {
@@ -225,7 +264,7 @@ function VerifyPassNewPage(props) {
                             variant="contained"
                             color="primary"
                             className={classes.submit}>
-                            Đăng ký
+                            Cập nhật
                         </Button>
 
                         <a href="/forgot" className={classes.txt_forgot}>

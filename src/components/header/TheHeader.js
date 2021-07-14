@@ -94,6 +94,7 @@ export default function TheHeader() {
     const [anchorPopover, setAnchorPopover] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const [categories, setCategories] = useState([]);
+    const [search, setSearch] = useState("");
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -130,6 +131,16 @@ export default function TheHeader() {
         }).catch(err => {
 
         })
+    }
+
+    const handleProfile = async () => {
+        handleMenuClose();
+        history.push("/setting/profile");
+    }
+
+    const handleSetting = async () => {
+        handleMenuClose();
+        history.push("/setting");
     }
 
     const handleMobileMenuOpen = (event) => {
@@ -174,8 +185,8 @@ export default function TheHeader() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Thông tin cá nhận</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Khoá học của tôi</MenuItem>
+            <MenuItem onClick={handleProfile}>Thông tin cá nhận</MenuItem>
+            <MenuItem onClick={handleSetting}>Cài đặt</MenuItem>
             <MenuItem onClick={handleSignout}>Đăng xuất</MenuItem>
         </Menu>
     );
@@ -191,8 +202,11 @@ export default function TheHeader() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <p>Profile</p>
+            <MenuItem onClick={handleProfile}>
+                <p>Thông tin cá nhân</p>
+            </MenuItem>
+            <MenuItem onClick={handleSetting}>
+                <p>Cài đặt</p>
             </MenuItem>
             {
                 !auth && <MenuItem>
@@ -255,7 +269,7 @@ export default function TheHeader() {
             </div>
         )
     }
-    
+
     return (
         <div className={classes.grow}>
             <AppBar position="static" style={{ backgroundColor: '#ffffff', color: 'darkgray', position: 'fixed' }}>
@@ -282,6 +296,14 @@ export default function TheHeader() {
                                     input: classes.inputInput,
                                 }}
                                 inputProps={{ 'aria-label': 'search' }}
+                                onChange={e => setSearch(e.target.value)}
+                                onKeyPress={(ev) => {
+                                    if (ev.key === 'Enter') {
+                                        // Do code here
+                                        ev.preventDefault();
+                                        history.push(`/courses/search?q=${search}`)
+                                    }
+                                }}
                             />
                         </div>
                     </div>

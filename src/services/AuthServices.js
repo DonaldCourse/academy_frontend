@@ -26,6 +26,22 @@ const getProfile = (body) => {
   return getAPI("/api/profile", body);
 };
 
+const validateRegister = (token) => {
+  return getAPI(`/api/auth/validate-account?token=${token}`);
+};
+
+const updatePassword = (body) => {
+  return postAPI("/api/auth/updatepassword", body);
+};
+
+const forgotPassword = (body) => {
+  return postAPI("/api/auth/forgotpassword", body);
+};
+
+const resetPassword = (body, token) => {
+  return postAPI(`/api/auth/resetpassword?token=${token}`, body);
+};
+
 export default {
   login,
   logout,
@@ -33,4 +49,8 @@ export default {
   register,
   updateProfile,
   getProfile,
+  validateRegister,
+  updatePassword,
+  forgotPassword,
+  resetPassword
 };

@@ -8,6 +8,8 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
 import { Redirect, useHistory } from "react-router-dom";
+import AuthServices from '../../services/AuthServices';
+import Swal from 'sweetalert2';
 
 ForgotPage.propTypes = {};
 
@@ -114,50 +116,57 @@ function ForgotPage(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPWD, setShowConfirmPWD] = useState(false);
-    const [password, setPassword] = useState("");
-    const [confirmPass, setConfirmPass] = useState("");
-    const history = useHistory();
-
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    }
-
-    const handleClickShowConfirmPassword = () => {
-        setShowConfirmPWD(!showConfirmPWD);
-    }
-
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
 
     const onSubmit = data => {
         const user_info = pick(data, [
             'email',
-            'username',
-            'password',
         ]);
 
         const body = {
             email: user_info.email,
-            username: user_info.username,
-            password: user_info.password
         }
 
+        forgot(body);
     }
 
-    const validateMatchedPass = (value) => {
-        if (value != password || value != confirmPass) {
-            return 'Vui lòng kiểm tra lại mật khẩu'
-        }
+    const forgot = async (body) => {
+        AuthServices.forgotPassword(body).then(res => {
+            if (res.status == 200) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Vui lòng kiểm tra email của bạn !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(result => {
+                    
+                });
+            } else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Quên mật thất bại !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(res => {
+                })
+            }
+        }).catch(err => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Quên mật thất bại !!!',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(res => {
+            })
+        })
     }
 
     return (
         <div className={classes.root}>
             <Grid container xs={8} sm={4}>
-                <Paper elecation={3}>
+                <Paper elecation={3} style={{width: "100%"}}>
                     <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
                         <Typography className={classes.title}>Quên mật khẩu</Typography>
 
@@ -187,10 +196,6 @@ function ForgotPage(props) {
                             className={classes.submit}>
                             Gửi
                         </Button>
-
-                        <a href="/forgot" className={classes.txt_forgot}>
-                            Quên mật khẩu ?
-                        </a>
 
                         <Grid container direction='row' className={classes.not_acc}>
                             <Typography className={classes.txt_not_acc}>

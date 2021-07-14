@@ -9,6 +9,7 @@ import { get, pick } from 'lodash';
 import { useHistory } from "react-router-dom";
 import AuthService from "../../services/AuthServices";
 import { useAuth } from '../../context/auth';
+import Swal from 'sweetalert2';
 
 LoginPgae.propTypes = {
 
@@ -143,9 +144,23 @@ function LoginPgae(props) {
                 window.localStorage.setItem("token", res.data.token);
                 setAuth(res.data.user);
                 history.push('/')
+            } else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Đăng nhập thất bại !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }).catch(err => {
-
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Đăng nhập thất bại !!!',
+                showConfirmButton: false,
+                timer: 1500
+            })
         })
     });
 

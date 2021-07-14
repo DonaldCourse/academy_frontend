@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Card, makeStyles, CardMedia, CardContent, Typography, Avatar, Box, Paper, CardActions, Button, Divider } from '@material-ui/core';
+import { Card, makeStyles, CardMedia, CardHeader, CardContent, Typography, Avatar, Box, Paper, CardActions, Button, Divider, IconButton } from '@material-ui/core';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import Rating from '@material-ui/lab/Rating';
 import Pagination from '@material-ui/lab/Pagination';
 import { Container } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import ItemLesson from '../components/ItemLesson';
 import PopupPreviewVideo from '../components/PopupPreviewVideo';
 import ItemReview from '../components/ItemReview';
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flex: '1 0 auto',
+        padding: '0 16px'
     },
     cover: {
         width: "100%",
@@ -104,12 +106,12 @@ function CourseDetailPage(props) {
     const [limit, setLimit] = useState(10);
     const { auth } = useAuth();
     const [validateCourse, setValidateCourse] = useState(false);
+    const [validateFavoriteCourse, setValidateFavoriteCourse] = useState(false);
 
     useEffect(() => {
         getCourseDetail();
         getAllRelated();
         if (auth && auth?.role && auth.role == "student") {
-            console.log("Donald");
             handleValidateCourse();
         }
     }, [params]);
@@ -214,7 +216,14 @@ function CourseDetailPage(props) {
                 if (res.status == 200) {
                     setValidateCourse(res.data.data)
                 }
-            })
+            });
+
+            CourseServices.CheckFavoriteCourse(params.id).then(res => {
+                if (res.status == 200) {
+                    setValidateFavoriteCourse(res.data.data)
+                }
+            });
+
         } catch (error) {
 
         }
@@ -253,6 +262,76 @@ function CourseDetailPage(props) {
         })
     }
 
+    const handleFavorite = () => {
+        if (auth && auth?.role && auth.role == "student") {
+            CourseServices.FavoriteCourse(params.id).then(res => {
+                if (res.status == 201) {
+                    setValidateFavoriteCourse(true);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cảm ơn bạn đã yêu thích khoá học !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Yêu thích không thành công !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }).catch(err => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Yêu thích không thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+        } else {
+            history.replace('/login');
+        }
+    }
+
+    const handleRemoveFavorite = () => {
+        if (auth && auth?.role && auth.role == "student") {
+            CourseServices.RemoveFavoriteCourse(params.id).then(res => {
+                if (res.status == 200) {
+                    setValidateFavoriteCourse(false);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Thật tiếc bạn đã không yêu thích khoá học !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Bỏ yêu thích không thành công !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }).catch(err => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Bỏ yêu thích không thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
+        } else {
+            history.replace('/login');
+        }
+    }
+
     return (
         <div className={classes.root}>
             <CardMedia
@@ -265,6 +344,24 @@ function CourseDetailPage(props) {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={3}>
                         <Card className={classes.details}>
+                            <CardHeader
+                                style={{ padding: "16px 16px 0 16px" }}
+                                avatar={
+                                    <Avatar aria-label="recipe">
+                                    </Avatar>
+                                }
+                                action={
+                                    !validateFavoriteCourse ?
+                                        <IconButton onClick={handleFavorite} aria-label="settings">
+                                            <FavoriteBorderIcon />
+                                        </IconButton>
+                                        :
+                                        <IconButton onClick={handleRemoveFavorite} color="primary" aria-label="settings">
+                                            <FavoriteIcon />
+                                        </IconButton>
+                                }
+                                title={course && course.lecturer_id.name}
+                            />
                             <CardContent className={classes.content}>
                                 <Typography variant="h5" component="h5" className={classes.maxLineTwo}>
                                     <Box lineHeight={1} fontWeight="fontWeightBold">
@@ -272,11 +369,6 @@ function CourseDetailPage(props) {
                                     </Box>
                                 </Typography>
                                 <Typography className={classes.maxLineTwo} variant="body1" component="p">{course && course.overview}</Typography>
-                                <div className={classes.author}>
-                                    <Avatar aria-label="recipe" className={classes.small}>
-                                    </Avatar>
-                                    <Typography style={{ marginLeft: '8px' }} variant="body2" component="p">{course && course.lecturer_id.name}</Typography>
-                                </div>
                                 <div className={classes.rating}>
                                     <Typography variant="body2" component="p" style={{ color: '#be5a0e', fontWeight: 700, lineHeight: 1.2 }}>{course && course.rating}</Typography>
                                     <Rating style={{ marginLeft: '8px' }} name="half-rating-read" size="small" value={course && course.rating || 1} precision={0.5} readOnly />

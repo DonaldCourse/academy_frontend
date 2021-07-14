@@ -14,7 +14,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
     marginLeft: theme.spacing(1),
-    border: '1px solid'
+    border: '1px solid',
+    cursor: "pointer",
+    pointerEvents: "auto"
   },
   media: {
     height: 0,

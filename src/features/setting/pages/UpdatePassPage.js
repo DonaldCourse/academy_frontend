@@ -8,12 +8,14 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
 import { Redirect, useHistory } from "react-router-dom";
+import AuthServices from '../../../services/AuthServices'
+import Swal from 'sweetalert2';
+import { useAuth } from "../../../context/auth";
 
 UpdatePassPage.propTypes = {};
 
 const useStyles = makeStyles(theme => ({
     root: {
-        height: '100vh',
         display: "flex",
         alignItems: "center",
         justifyContent: "center"
@@ -119,6 +121,7 @@ function UpdatePassPage(props) {
     const [password, setPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const history = useHistory();
+    const { auth, setAuth } = useAuth();
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -135,17 +138,58 @@ function UpdatePassPage(props) {
 
     const onSubmit = data => {
         const user_info = pick(data, [
-            'email',
-            'username',
+            'currentPassword',
             'password',
         ]);
 
         const body = {
-            email: user_info.email,
-            username: user_info.username,
+            currentPassword: user_info.currentPassword,
             password: user_info.password
         }
 
+        updatePassword(body);
+    }
+
+    const updatePassword = async (body) => {
+        try {
+            AuthServices.updatePassword(body).then(res => {
+                if (res.status == 200) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cập nhật mật khẩu thành công !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(result => {
+                        window.localStorage.setItem("token", res.data.token);
+                        setAuth(res.data.user);
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Cập nhật mật khẩu thất bại !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(res => {
+
+                    })
+                }
+            }).catch(err => {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Cập nhật mật khẩu thất bại !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(res => {
+
+                })
+            })
+        } catch (error) {
+
+        }
     }
 
     const validateMatchedPass = (value) => {
@@ -162,20 +206,19 @@ function UpdatePassPage(props) {
                         <Typography className={classes.title}>Cập nhật mật khẩu</Typography>
 
                         <TextField
-                            {...register("passwordold", {
+                            {...register("currentPassword", {
                                 required: 'Vui lòng nhập mật khẩu !',
-                                validate: value => validateMatchedPass(value)
                             })}
-                            error={!!errors.passwordold}
-                            helperText={get(errors, 'passwordold.message', '')}
+                            error={!!errors.currentPassword}
+                            helperText={get(errors, 'currentPassword.message', '')}
                             size="small"
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
-                            id="passwordold"
+                            id="currentPassword"
                             label="Mật khẩu cũ"
-                            name="passwordold"
+                            name="currentPassword"
                             onChange={e => setPassword(e.target.value)}
                             type={showPassword ? 'text' : 'password'}
                             InputProps={{
@@ -254,21 +297,8 @@ function UpdatePassPage(props) {
                             variant="contained"
                             color="primary"
                             className={classes.submit}>
-                            Đăng ký
+                            Cập nhật
                         </Button>
-
-                        <a href="/forgot" className={classes.txt_forgot}>
-                            Quên mật khẩu ?
-                        </a>
-
-                        <Grid container direction='row' className={classes.not_acc}>
-                            <Typography className={classes.txt_not_acc}>
-                                Bạn đã có tài khoản?
-                            </Typography>
-                            <a href="/login" className={classes.txt_register}>
-                                Đăng nhập
-                            </a>
-                        </Grid>
                     </form>
                 </Paper>
             </Grid>

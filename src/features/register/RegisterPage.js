@@ -1,14 +1,14 @@
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useForm } from "react-hook-form";
 import { Grid, InputAdornment, IconButton, Button, TextField, Typography, Paper } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { get, pick } from 'lodash';
 import { Redirect, useHistory } from "react-router-dom";
-
+import AuthServices from '../../services/AuthServices';
+import Swal from 'sweetalert2';
 RegisterPage.propTypes = {};
 
 const useStyles = makeStyles(theme => ({
@@ -135,17 +135,49 @@ function RegisterPage(props) {
 
     const onSubmit = data => {
         const user_info = pick(data, [
+            'name',
             'email',
-            'username',
             'password',
         ]);
 
         const body = {
+            name: user_info.name,
             email: user_info.email,
-            username: user_info.username,
             password: user_info.password
         }
+        registerAccount(body);
+    }
 
+    const registerAccount = async (body) => {
+        AuthServices.register(body).then(res => {
+            if (res.status == 200) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Vui lòng kiểm tra email của bạn để xác nhận tài khoản !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(res => {
+                    history.replace('/login');
+                });
+            } else {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Đăng ký không thành công !!!',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        }).catch(err => {
+            Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Đăng ký không thành công !!!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
     }
 
     const validateMatchedPass = (value) => {
@@ -162,19 +194,19 @@ function RegisterPage(props) {
                         <Typography className={classes.title}>Đăng ký</Typography>
 
                         <TextField
-                            {...register("username", {
+                            {...register("name", {
                                 required: 'Vui lòng nhập họ và tên !',
                             })}
-                            error={!!errors.username}
-                            helperText={get(errors, 'username.message', '')}
+                            error={!!errors.name}
+                            helperText={get(errors, 'name.message', '')}
                             size="small"
                             variant="outlined"
                             margin="normal"
                             required
                             fullWidth
-                            id="username"
+                            id="name"
                             label="Họ và tên"
-                            name="username"
+                            name="name"
                         />
 
                         <TextField
