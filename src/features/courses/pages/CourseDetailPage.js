@@ -17,6 +17,7 @@ import { useAuth } from '../../../context/auth';
 import CourseServices from '../../../services/CourseServices';
 import Swal from 'sweetalert2'
 import DialogFeedbackCourse from '../components/DialogFeedbackCourse';
+import red from '@material-ui/core/colors/red';
 
 CourseDetailPage.propTypes = {
 
@@ -53,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         marginTop: theme.spacing(1),
+        width: "100%"
     },
     small: {
         width: theme.spacing(3),
@@ -85,7 +87,12 @@ const useStyles = makeStyles((theme) => ({
     feedback: {
         display: 'flex',
         justifyContent: 'center',
-        marginTop: theme.spacing(2)
+        marginTop: theme.spacing(2),
+        width: "100%",
+        [theme.breakpoints.up('xs')]: {
+            display: "block",
+            width: "100%"
+        },
     }
 }));
 
@@ -356,7 +363,7 @@ function CourseDetailPage(props) {
                                             <FavoriteBorderIcon />
                                         </IconButton>
                                         :
-                                        <IconButton onClick={handleRemoveFavorite} color="primary" aria-label="settings">
+                                        <IconButton onClick={handleRemoveFavorite} style={{ color: "#f44336" }} aria-label="settings">
                                             <FavoriteIcon />
                                         </IconButton>
                                 }
@@ -459,7 +466,7 @@ function CourseDetailPage(props) {
                             <div className={classes.feedback}>
                                 {
                                     feedbacks && feedbacks.map((item, index) => {
-                                        return <div key={index} style={{ width: "100%" }}>
+                                        return <div key={index} style={{ width: "100%", marginTop: "8px" }}>
                                             <ItemReview item={item}></ItemReview>
                                             <Divider style={{ width: "100%", marginTop: '16px' }}></Divider>
                                         </div>

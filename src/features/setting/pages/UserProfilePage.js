@@ -16,6 +16,11 @@ import styled from "styled-components";
 import { grey } from "@material-ui/core/colors";
 import CreateOutlinedIcon from '@material-ui/icons/CreateOutlined';
 import UploadAvatarDialog from "../components/UploadAvatarDialog";
+import { useDispatch, useSelector } from "react-redux";
+import UploadFileCDNService from "../../../services/UploadFileCDNService";
+import AuthServices from "../../../services/AuthServices";
+import { setAuth } from '../../../reducer/AuthSlide';
+import UploadProfileDialog from "../components/UpdateProfileDialog";
 
 const BigAvatar = styled(Avatar)`
   width: 100px !important;
@@ -51,38 +56,49 @@ const useStyles = makeStyles((theme) => ({
 function UserProfilePage(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [image, setImage] = useState();
-  // const saveImage = async () => {
-  //   setExpand(false);
-  //   if (!imageAfterChange) return;
-  //   if (window.confirm(`Bạn chắc chắn muốn thay đổi ảnh đại diện`)) {
-  // const file = await urltoFile(imageAfterChange, "avatar.jpg", "image/jpg");
-  // var data = new FormData();
-  // data.append("files", file);
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
 
-  // // now upload
-  // const config = {
-  //   headers: {
-  //     authorization: localStorage.getItem("token"),
-  //     "Content-Type": "application/x-www-form-urlencoded",
-  //   },
-  // };
-  // axios.post(FILE_URL, data, config).then((response) => {
-  //   // console.log(response);
-  //   setUrl(response[0].url);
-  // });
-  //   } else {
-  //     return;
-  //   }
-  // };
+  const userProfile = useSelector(state => state.authSlide.auth);
+  const dispatch = useDispatch();
+
   const onClose = () => {
     setOpen(!open);
   }
 
-  const onSubmit = (image) => {
+  const onCloseProfileDialog = () => {
+    setOpenProfileDialog(!openProfileDialog);
+  }
+
+  const onSubmit = async (image) => {
     onClose();
-    setImage(URL.createObjectURL(image));
-    console.log(image);
+    onHandleChangeAvatar(image);
+  }
+
+  const onSubmitProfile = async (data) => {
+    onCloseProfileDialog();
+    updateUserProfile(data);
+  }
+
+  const onHandleChangeAvatar = async (file) => {
+    var data = new FormData();
+    data.append("files", file);
+    const results = await UploadFileCDNService.UploadFile(data);
+    const body = {
+      avatar: results.data[0].url
+    }
+    updateUserProfile(body);
+  }
+
+  const updateUserProfile = async (body) => {
+    try {
+      AuthServices.updateUserProfile(body).then(res => {
+        if (res.status == 200) {
+          dispatch(setAuth(res.data.user));
+        }
+      });
+    } catch (error) {
+
+    }
   }
 
   return (
@@ -106,7 +122,7 @@ function UserProfilePage(props) {
                 <BigAvatar
                   $withBorder
                   alt="Avatar"
-                  src={image}
+                  src={userProfile.avatar}
                   imgProps={{
                     style: {
                       maxHeight: "100%",
@@ -118,18 +134,18 @@ function UserProfilePage(props) {
                 />
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <Typography variant="body1" component="p">
-                    Họ và Tên : Donald Trieu
+                    Họ và Tên : {userProfile.name}
                   </Typography>
-                  <IconButton aria-label="delete" className={classes.margin}>
+                  <IconButton aria-label="delete" className={classes.margin} onClick={() => setOpenProfileDialog(!openProfileDialog)}>
                     <CreateOutlinedIcon fontSize="small" />
                   </IconButton>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                   <Typography variant="body1" component="p">
-                    Email : trieu@hatto.com
+                    Email : {userProfile.email}
                   </Typography>
-                  <IconButton aria-label="delete" className={classes.margin}>
+                  <IconButton aria-label="delete" className={classes.margin} onClick={() => setOpenProfileDialog(!openProfileDialog)}>
                     <CreateOutlinedIcon fontSize="small" />
                   </IconButton>
                 </div>
@@ -140,6 +156,7 @@ function UserProfilePage(props) {
         </Grid>
       </Container >
       <UploadAvatarDialog open={open} onClose={onClose} onSubmit={onSubmit}></UploadAvatarDialog>
+      <UploadProfileDialog open={openProfileDialog} onClose={onCloseProfileDialog} onSubmit={onSubmitProfile} defaultValues={{name: userProfile.name, email: userProfile.email}}></UploadProfileDialog>
     </>
   );
 }

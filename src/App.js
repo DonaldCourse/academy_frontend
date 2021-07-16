@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PublicRouter from './routes/PublicRouter';
 import ProtectRouter from './routes/ProtectRouter';
 
 import './scss/style.scss';
-
+import { useDispatch } from 'react-redux';
+import { getMe } from './reducer/AuthSlide';
 const loading = (
   <div className="pt-3 text-center">
     <div className="sk-spinner sk-spinner-pulse"></div>
@@ -22,6 +23,13 @@ const VerifyPassNewPage = React.lazy(() => import('./features/forgot/VerifyPassN
 const TheLayout = React.lazy(() => import('./components/layout/TheLayout'));
 
 function App(props) {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, []);
+
   return (
     <BrowserRouter>
       <React.Suspense fallback={loading}>

@@ -16,7 +16,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Hidden from '@material-ui/core/Hidden';
 import tingtong from '../../assets/icons/tingtong_text.png'
-import { Button } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
 import PopoverCategories from '../shared/PopoverCategories';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -99,6 +99,7 @@ export default function TheHeader() {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const { auth, setAuth } = useAuth();
+    const userProfile = useSelector(state => state.authSlide.auth);
     const history = useHistory();
 
     useEffect(() => {
@@ -239,9 +240,8 @@ export default function TheHeader() {
                             aria-controls={menuId}
                             aria-haspopup="true"
                             onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
+                            color="inherit">
+                            <Avatar src={userProfile.avatar}></Avatar>
                         </IconButton>
                     </div>
                 </div>

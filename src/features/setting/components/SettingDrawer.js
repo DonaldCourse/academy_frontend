@@ -106,6 +106,7 @@ function SettingDrawer({ open, onClose }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const { auth } = useAuth();
+  const userProfile = useSelector(state => state.authSlide.auth);
   return (
     <Drawer
       variant="permanent"
@@ -124,22 +125,22 @@ function SettingDrawer({ open, onClose }) {
         <Avatar
           className={classes.info}
           alt="Remy Sharp"
-          src={""}
+          src={userProfile.avatar}
         />
       ) : (
         <div className={classes.info}>
           <Avatar
             alt="Remy Sharp"
             style={{ width: 70, height: 70 }}
-            src={""}
+            src={userProfile.avatar}
           />
-          <Typography variant="h4" component="h4" style={{width: 240, overflow: "hidden", justifyContent: "flex-start"}}>
-            <Box lineHeight={2} fontWeight="fontWeightBold">
-              {auth.name}
+          <Typography variant="h4" component="h4" style={{ whiteSpace: "pre-wrap", textAlign: "center" }}>
+            <Box style={{ whiteSpace: "pre-wrap", textAlign: "center" }} fontWeight="fontWeightBold">
+              {userProfile.name}
             </Box>
           </Typography>
-          <Typography variant="body2" component="p">
-            {auth.email}
+          <Typography variant="body2" component="p" style={{ whiteSpace: "pre-wrap", textAlign: "center" }}>
+            {userProfile.email}
           </Typography>
         </div>
       )}

@@ -14,6 +14,10 @@ const validateUser = () => {
   return getAPI("/api/auth/validate-user", {});
 };
 
+const getUserProfile = () => {
+  return getAPI("/api/auth/student/profile", {});
+};
+
 const register = (body) => {
   return postAPI("/api/auth/register", body);
 };
@@ -42,6 +46,10 @@ const resetPassword = (body, token) => {
   return postAPI(`/api/auth/resetpassword?token=${token}`, body);
 };
 
+const updateUserProfile = (body) => {
+  return putAPI("/api/auth/student/profile", body);
+};
+
 export default {
   login,
   logout,
@@ -52,5 +60,7 @@ export default {
   validateRegister,
   updatePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getUserProfile,
+  updateUserProfile
 };
