@@ -61,7 +61,7 @@ export default function ItemCourse({ course }) {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
+          <Avatar aria-label="recipe" className={classes.avatar} src={course.lecturer_id.user_id?.avatar}>
             R
           </Avatar>
         }

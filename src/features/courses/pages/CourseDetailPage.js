@@ -354,7 +354,7 @@ function CourseDetailPage(props) {
                             <CardHeader
                                 style={{ padding: "16px 16px 0 16px" }}
                                 avatar={
-                                    <Avatar aria-label="recipe">
+                                    <Avatar aria-label="recipe" src={course && course.lecturer_id.user_id.avatar}>
                                     </Avatar>
                                 }
                                 action={
@@ -367,7 +367,7 @@ function CourseDetailPage(props) {
                                             <FavoriteIcon />
                                         </IconButton>
                                 }
-                                title={course && course.lecturer_id.name}
+                                title={course && course.lecturer_id.user_id.name}
                             />
                             <CardContent className={classes.content}>
                                 <Typography variant="h5" component="h5" className={classes.maxLineTwo}>
