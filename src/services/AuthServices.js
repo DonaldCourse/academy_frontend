@@ -7,7 +7,7 @@ const login = (data) => {
 };
 
 const logout = () => {
-  return getAPI("/api/auth/logout");
+  return postAPI("/api/auth/logout");
 };
 
 const validateUser = () => {

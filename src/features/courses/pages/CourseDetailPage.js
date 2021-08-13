@@ -237,19 +237,29 @@ function CourseDetailPage(props) {
     }
 
     const handleFeedback = (body) => {
-        setOpenReview(!openReview)
-        CourseServices.PostReviewCourse(params.id, body).then(res => {
-            if (res.status == 201) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Cảm ơn bạn đã đánh giá về khoá học !!!',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(res => {
-                    window.location.reload();
-                })
-            } else {
+        if (auth && auth?.role && auth.role == "student") {
+            setOpenReview(!openReview)
+            CourseServices.PostReviewCourse(params.id, body).then(res => {
+                if (res.status == 201) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Cảm ơn bạn đã đánh giá về khoá học !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(res => {
+                        window.location.reload();
+                    })
+                } else {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Đánh giá không thành công !!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            }).catch(err => {
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
@@ -257,16 +267,10 @@ function CourseDetailPage(props) {
                     showConfirmButton: false,
                     timer: 1500
                 })
-            }
-        }).catch(err => {
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Đánh giá không thành công !!!',
-                showConfirmButton: false,
-                timer: 1500
             })
-        })
+        } else {
+            history.replace('/login');
+        }
     }
 
     const handleFavorite = () => {
@@ -354,7 +358,7 @@ function CourseDetailPage(props) {
                             <CardHeader
                                 style={{ padding: "16px 16px 0 16px" }}
                                 avatar={
-                                    <Avatar aria-label="recipe" src={course && process.env.REACT_APP_BASE_URL_CDN  + course.lecturer_id.user_id.avatar}>
+                                    <Avatar aria-label="recipe" src={course && process.env.REACT_APP_BASE_URL_CDN + course.lecturer_id.user_id.avatar}>
                                     </Avatar>
                                 }
                                 action={
@@ -406,7 +410,7 @@ function CourseDetailPage(props) {
                                 }
 
                                 <Button
-                                    onClick={() => setOpenReview(true)}
+                                    onClick={handleFeedback}
                                     type='button'
                                     fullWidth
                                     variant="contained"
