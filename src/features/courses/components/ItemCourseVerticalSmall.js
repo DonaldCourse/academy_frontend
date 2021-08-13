@@ -75,7 +75,7 @@ function ItemCourseVerticalSmall({ item }) {
                     </Typography>
                     <Typography className={classes.maxLineTwo} variant="body2" component="p">{item.overview}</Typography>
                     <div className={classes.author}>
-                        <Avatar aria-label="recipe" className={classes.small} src={item.lecturer_id.user_id.avatar}>
+                        <Avatar aria-label="recipe" className={classes.small} src={process.env.REACT_APP_BASE_URL_CDN  + item.lecturer_id.user_id.avatar}>
                         </Avatar>
                         <Typography style={{ marginLeft: '8px' }} variant="body2" component="p">{item.lecturer_id.user_id.name}</Typography>
                     </div>

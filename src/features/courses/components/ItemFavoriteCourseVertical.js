@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         flex: '1 0 auto',
     },
     cover: {
-        width: 151,
+        height: "100%"
     },
     author: {
         display: 'flex',
@@ -77,7 +77,7 @@ function ItemFavoriteCourseVertical({ item, onRemove }) {
                     <CardMedia
                         component="img"
                         alt="Contemplative Reptile"
-                        image={item.avatar}
+                        image={process.env.REACT_APP_BASE_URL_CDN  + item.avatar}
                         className={classes.cover}>
                     </CardMedia>
                 </Grid>
@@ -90,7 +90,7 @@ function ItemFavoriteCourseVertical({ item, onRemove }) {
                         </Typography>
                         <Typography className={classes.maxLineTwo} variant="body2" component="p">{item.overview}</Typography>
                         <div className={classes.author}>
-                            <Avatar aria-label="recipe" className={classes.small} src={item.lecturer_id.user_id.avatar}>
+                            <Avatar aria-label="recipe" className={classes.small} src={process.env.REACT_APP_BASE_URL_CDN  + item.lecturer_id.user_id.avatar}>
                             </Avatar>
                             <Typography style={{ marginLeft: '8px' }} variant="body2" component="p">{item.lecturer_id.user_id.name}</Typography>
                         </div>

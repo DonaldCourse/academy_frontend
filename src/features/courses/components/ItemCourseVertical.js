@@ -59,13 +59,13 @@ const useStyles = makeStyles((theme) => ({
 function ItemCourseVertical({ item }) {
     const classes = useStyles();
     const history = useHistory();
-    
+
     return (
         <Card className={classes.root} onClick={() => history.replace(`/courses/${item._id}`)}>
             <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
-                image={item.avatar}
+                image={process.env.REACT_APP_BASE_URL_CDN + item.avatar}
                 className={classes.cover}>
             </CardMedia>
             <div className={classes.details}>
@@ -77,7 +77,7 @@ function ItemCourseVertical({ item }) {
                     </Typography>
                     <Typography className={classes.maxLineTwo} variant="body2" component="p">{item.overview}</Typography>
                     <div className={classes.author}>
-                        <Avatar aria-label="recipe" className={classes.small} src={item.lecturer_id.user_id.avatar}>
+                        <Avatar aria-label="recipe" className={classes.small} src={process.env.REACT_APP_BASE_URL_CDN + item.lecturer_id.user_id.avatar}>
                         </Avatar>
                         <Typography style={{ marginLeft: '8px' }} variant="body2" component="p">{item.lecturer_id.user_id.name}</Typography>
                     </div>
@@ -85,10 +85,10 @@ function ItemCourseVertical({ item }) {
                         <Typography variant="body2" component="p" style={{ color: '#be5a0e', fontWeight: 700, lineHeight: 1.2 }}>{item.rating}</Typography>
                         <Rating style={{
                             marginLeft: '8px'
-                        }}  name="half-rating-read" size="small" defaultValue={item.rating} precision={0.5} readOnly />
-                        <Typography  style={{
+                        }} name="half-rating-read" size="small" defaultValue={item.rating} precision={0.5} readOnly />
+                        <Typography style={{
                             marginLeft: '8px'
-                        }}  variant="body2" component="p">{item.count_rating}</Typography>
+                        }} variant="body2" component="p">{item.count_rating}</Typography>
                     </div>
                     <Typography style={{
                         marginTop: '8px'

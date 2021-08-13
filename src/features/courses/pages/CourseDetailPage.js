@@ -344,7 +344,7 @@ function CourseDetailPage(props) {
             <CardMedia
                 component="img"
                 alt="Contemplative Reptile"
-                image={course && course.avatar}
+                image={course && process.env.REACT_APP_BASE_URL_CDN + course.avatar}
                 className={classes.cover}>
             </CardMedia>
             <Container className={classes.container}>
@@ -354,7 +354,7 @@ function CourseDetailPage(props) {
                             <CardHeader
                                 style={{ padding: "16px 16px 0 16px" }}
                                 avatar={
-                                    <Avatar aria-label="recipe" src={course && course.lecturer_id.user_id.avatar}>
+                                    <Avatar aria-label="recipe" src={course && process.env.REACT_APP_BASE_URL_CDN  + course.lecturer_id.user_id.avatar}>
                                     </Avatar>
                                 }
                                 action={

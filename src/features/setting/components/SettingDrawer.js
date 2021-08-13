@@ -125,14 +125,14 @@ function SettingDrawer({ open, onClose }) {
         <Avatar
           className={classes.info}
           alt="Remy Sharp"
-          src={userProfile.avatar}
+          src={process.env.REACT_APP_BASE_URL_CDN  + userProfile.avatar}
         />
       ) : (
         <div className={classes.info}>
           <Avatar
             alt="Remy Sharp"
             style={{ width: 70, height: 70 }}
-            src={userProfile.avatar}
+            src={process.env.REACT_APP_BASE_URL_CDN + userProfile.avatar}
           />
           <Typography variant="h4" component="h4" style={{ whiteSpace: "pre-wrap", textAlign: "center" }}>
             <Box style={{ whiteSpace: "pre-wrap", textAlign: "center" }} fontWeight="fontWeightBold">

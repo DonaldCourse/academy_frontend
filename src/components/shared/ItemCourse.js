@@ -61,7 +61,7 @@ export default function ItemCourse({ course }) {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar} src={course.lecturer_id.user_id?.avatar}>
+          <Avatar aria-label="recipe" className={classes.avatar} src={process.env.REACT_APP_BASE_URL_CDN + course.lecturer_id.user_id?.avatar}>
             R
           </Avatar>
         }
@@ -70,7 +70,7 @@ export default function ItemCourse({ course }) {
       />
       <CardMedia
         className={classes.media}
-        image={course.avatar}
+        image={process.env.REACT_APP_BASE_URL_CDN + course.avatar}
         title="Paella dish"
       />
       <CardContent>

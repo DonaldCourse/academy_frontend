@@ -76,8 +76,8 @@ function CourseStudentPage(props) {
                     <Player
                         autoPlay
                         ref={refPlayer}
-                        src={lessonSelected && lessonSelected.video_url || ''}
-                        fluid={false} height="100%" poster={lessonSelected && lessonSelected.thumbnail}>
+                        src={lessonSelected && process.env.REACT_APP_BASE_URL_CDN  + lessonSelected.video_url || ''}
+                        fluid={false} height="100%" poster={lessonSelected && process.env.REACT_APP_BASE_URL_CDN  + lessonSelected.thumbnail}>
                         <BigPlayButton position="center" />
                     </Player>
                 </Grid>

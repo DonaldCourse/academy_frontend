@@ -24,7 +24,7 @@ export default function ItemReview({ item }) {
 
     return (
         <div className={classes.root}>
-            <Avatar src={item.student_id.user_id.avatar} aria-label="recipe" className={classes.avatar}>
+            <Avatar src={process.env.REACT_APP_BASE_URL_CDN + item.student_id.user_id.avatar} aria-label="recipe" className={classes.avatar}>
             </Avatar>
             <div className={classes.content}>
                 <Typography variant="h4" component="h4">

@@ -30,9 +30,9 @@ export default function PopupPreviewVideo({ open, onClose, lesson }) {
             >
                 <DialogTitle id="responsive-dialog-title">{lesson.title}</DialogTitle>
                 <DialogContent className={classes.root}>
-                    <Player fluid={false} width="100%" height="100%" poster={lesson.thumbnail}>
+                    <Player fluid={false} width="100%" height="100%" poster={process.env.REACT_APP_BASE_URL_CDN  + lesson.thumbnail}>
                         <BigPlayButton position="center" />
-                        <source src={lesson.video_url} />
+                        <source src={process.env.REACT_APP_BASE_URL_CDN  + lesson.video_url} />
                     </Player>
                 </DialogContent>
             </Dialog>
