@@ -137,7 +137,7 @@ function LoginPgae(props) {
 
     };
 
-    const fetchLogin = useCallback(async (data) => {
+    const fetchLogin = async (data) => {
         AuthService.login(data).then(res => {
             if (res.status == 200) {
                 console.log(res.data);
@@ -162,7 +162,7 @@ function LoginPgae(props) {
                 timer: 1500
             })
         })
-    });
+    };
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);

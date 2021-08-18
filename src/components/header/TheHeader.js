@@ -241,7 +241,7 @@ export default function TheHeader() {
                             aria-haspopup="true"
                             onClick={handleProfileMenuOpen}
                             color="inherit">
-                            <Avatar src={process.env.REACT_APP_BASE_URL_CDN+userProfile.avatar}></Avatar>
+                            <Avatar src={process.env.REACT_APP_BASE_URL_CDN+userProfile.avatar||""}></Avatar>
                         </IconButton>
                     </div>
                 </div>
