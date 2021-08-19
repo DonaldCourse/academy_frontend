@@ -23,4 +23,24 @@ const routes = [
   },
 ];
 
+//create routes
+const routes = [
+  {
+    path: "/", name: "Trang chủ", component: HomePage, auth: false, exact: true
+  },
+  {
+    path: "/courses", name: "Khoá học", component: Courses, auth: false, exact: true
+  },
+  {
+    path: "/courses/search", name: "Tìm kiếm khoá học", component: CourseSearchPage, auth: false, exact: true
+  },
+  {
+    path: "/courses/:id", name: "Chi tiết khoá học", component: CourseDetailPage, auth: false, exact: true
+  },
+  {
+    path: "/courses/:id/lessons", name: "Chi tiết khoá học", component: CourseStudentPage, auth: true, exact: true
+  },
+];
+
+
 export default routes;
