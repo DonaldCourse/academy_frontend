@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { useForm } from "react-hook-form";
 import { Grid, InputAdornment, IconButton, Button, TextField, Typography, Paper } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
@@ -10,8 +9,7 @@ import { get, pick } from 'lodash';
 import { Redirect, useHistory } from "react-router-dom";
 import AuthServices from '../../services/AuthServices';
 import Swal from 'sweetalert2';
-
-ForgotPage.propTypes = {};
+RegisterPage.propTypes = {};
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -112,63 +110,104 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-function ForgotPage(props) {
+function RegisterPage(props) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPWD, setShowConfirmPWD] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirmPass, setConfirmPass] = useState("");
+    const history = useHistory();
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const handleClickShowConfirmPassword = () => {
+        setShowConfirmPWD(!showConfirmPWD);
+    }
+
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const onSubmit = data => {
         const user_info = pick(data, [
+            'name',
             'email',
+            'password',
         ]);
 
         const body = {
+            name: user_info.name,
             email: user_info.email,
+            password: user_info.password
         }
-
-        forgot(body);
+        registerAccount(body);
     }
 
-    const forgot = async (body) => {
-        AuthServices.forgotPassword(body).then(res => {
+    const registerAccount = async (body) => {
+        AuthServices.register(body).then(res => {
             if (res.status == 200) {
                 Swal.fire({
                     position: 'center',
                     icon: 'success',
-                    title: 'Vui lòng kiểm tra email của bạn !!!',
+                    title: 'Vui lòng kiểm tra email của bạn để xác nhận tài khoản !!!',
                     showConfirmButton: false,
                     timer: 1500
-                }).then(result => {
-                    
+                }).then(res => {
+                    history.replace('/login');
                 });
             } else {
                 Swal.fire({
                     position: 'center',
                     icon: 'error',
-                    title: 'Quên mật khẩu thất bại !!!',
+                    title: 'Đăng ký không thành công !!!',
                     showConfirmButton: false,
                     timer: 1500
-                }).then(res => {
                 })
             }
         }).catch(err => {
             Swal.fire({
                 position: 'center',
                 icon: 'error',
-                title: 'Quên mật thất bại !!!',
+                title: 'Đăng ký không thành công !!!',
                 showConfirmButton: false,
                 timer: 1500
-            }).then(res => {
             })
         })
+    }
+
+    const validateMatchedPass = (value) => {
+        if (value != password || value != confirmPass) {
+            return 'Vui lòng kiểm tra lại mật khẩu'
+        }
     }
 
     return (
         <div className={classes.root}>
             <Grid container xs={8} sm={4}>
-                <Paper elecation={3} style={{width: "100%"}}>
+                <Paper elecation={3}>
                     <form onSubmit={handleSubmit(onSubmit)} className={classes.form} noValidate>
-                        <Typography className={classes.title}>Quên mật khẩu</Typography>
+                        <Typography className={classes.title}>Đăng ký</Typography>
+
+                        <TextField
+                            {...register("name", {
+                                required: 'Vui lòng nhập họ và tên !',
+                            })}
+                            error={!!errors.name}
+                            helperText={get(errors, 'name.message', '')}
+                            size="small"
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Họ và tên"
+                            name="name"
+                        />
 
                         <TextField
                             {...register("email", {
@@ -188,14 +227,76 @@ function ForgotPage(props) {
                             type="email"
                         />
 
+                        <TextField
+                            {...register("password", {
+                                required: 'Vui lòng nhập mật khẩu !',
+                                validate: value => validateMatchedPass(value)
+                            })}
+                            error={!!errors.password}
+                            helperText={get(errors, 'password.message', '')}
+                            size="small"
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="password"
+                            label="Mật khẩu"
+                            name="password"
+                            onChange={e => setPassword(e.target.value)}
+                            type={showPassword ? 'text' : 'password'}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end">
+                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }}
+                        />
+
+                        <TextField
+                            {...register("confirmpwd", {
+                                required: 'Vui lòng nhập mật khẩu !',
+                                validate: value => validateMatchedPass(value)
+                            })}
+                            error={!!errors.confirmpwd}
+                            helperText={get(errors, 'confirmpwd.message', '')}
+                            size="small"
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="confirmpwd"
+                            label="Xác nhận mật khẩu"
+                            name="confirmpwd"
+                            type={showConfirmPWD ? 'text' : 'password'}
+                            onChange={e => setConfirmPass(e.target.value)}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleClickShowConfirmPassword}
+                                        edge="end">
+                                        {showConfirmPWD ? <Visibility /> : <VisibilityOff />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }}
+                        />
+
                         <Button
                             type='submit'
                             fullWidth
                             variant="contained"
                             color="primary"
                             className={classes.submit}>
-                            Gửi
+                            Đăng ký
                         </Button>
+
+                        <a href="/forgot" className={classes.txt_forgot}>
+                            Quên mật khẩu ?
+                        </a>
 
                         <Grid container direction='row' className={classes.not_acc}>
                             <Typography className={classes.txt_not_acc}>
@@ -212,4 +313,4 @@ function ForgotPage(props) {
     );
 }
 
-export default ForgotPage;
+export default RegisterPage;
