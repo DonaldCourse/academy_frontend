@@ -104,8 +104,8 @@ function HomePage(props) {
                     <Carousel.Item>
                         <div className="row">
                             <div className="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 d-flex flex-column justify-content-center carousel-left">
-                                <h1>Nền tảng Trí tuệ nhân tạo toàn diện, tạo đột phá cho quy trình doanh nghiệp</h1>
-                                <p>Trí tuệ nhân tạo (AI) đang dần hiện hữu ở mọi lĩnh vực trong cuộc sống của con người. Không thể phủ nhận sự bùng nổ với nhiều đột phá của AI ở thời điểm hiện tại và là AI một trong vấn đề trọng yếu cho doanh nghiệp của bạn.</p>
+                                <h1>Say hello to your private English tutor</h1>
+                                <p>Become fluent faster through one-on-one video chat lessons tailored to your goals.</p>
                             </div>
                             <div className="container col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-flex justify-content-end align-items-center carousel-right">
                                 <img
@@ -119,10 +119,8 @@ function HomePage(props) {
                     <Carousel.Item>
                         <div className="row">
                             <div className="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 d-flex flex-column justify-content-center carousel-left">
-                                <h1>Tăng tốc quy trình xử lý dữ liệu cùng giải pháp tự động hóa với chi phí tối ưu</h1>
-                                <p>
-                                    Giúp tăng tốc quy trình kinh doanh, giảm bớt tác vụ thủ công, tiết kiệm chi phí và tạo ra trải nghiệm khách hàng độc đáo. Tạo sức mạnh cộng hưởng từ việc ứng dụng các giải pháp AI, doanh nghiệp có cơ hội tăng trưởng đột phá.
-                                </p>
+                                <h1>Say hello to your private English tutor</h1>
+                                <p>Become fluent faster through one-on-one video chat lessons tailored to your goals.</p>
                             </div>
                             <div className="container col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-flex justify-content-end align-items-center carousel-right">
                                 <img
@@ -136,8 +134,8 @@ function HomePage(props) {
                     <Carousel.Item>
                         <div className="row">
                             <div className="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 d-flex flex-column justify-content-center carousel-left">
-                                <h1>Hỗ trợ nguồn lực bao gồm các chuyên gia trong và ngoài nước để xây dựng nền tảng AI vững mạnh</h1>
-                                <p>Trí tuệ nhân tạo (AI) đang dần hiện hữu ở mọi lĩnh vực trong cuộc sống của con người. Không thể phủ nhận sự bùng nổ với nhiều đột phá của AI ở thời điểm hiện tại và là AI một trong vấn đề trọng yếu cho doanh nghiệp của bạn.</p>
+                                <h1>English immersion from anywhere</h1>
+                                <p>Build English proficiency and confidence through real conversations with friendly tutors from the US, UK, Australia, and more. All you need is your device!</p>
                             </div>
                             <div className="container col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 d-flex justify-content-end align-items-center carousel-right">
                                 <img
