@@ -61,7 +61,7 @@ function CourseSearchPage(props) {
     const [totalItem, setTotalItem] = useState(0);
     const [total, setTotal] = useState(1);
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(3);
     const search = queryString.parse(window.location.search);
     const [loading, setLoading] = useState(false);
     const history = useHistory();
